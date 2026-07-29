@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+jinja2
+httpx
+apscheduler
+aiofiles
+aiohttp
+discord.py
+sqlalchemy
+sqlalchemy.ext.asyncio
+aiosqlite
+python-multipart
+python-dotenv
