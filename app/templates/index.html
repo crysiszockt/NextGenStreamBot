@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Startseite{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>Streamer Bot</h1>
+    <p class="hero-sub">Verwalte deine Twitch-Benachrichtigungen für deinen Discord-Server</p>
+    <div class="hero-actions">
+        {% if user %}
+            <a href="/dashboard" class="btn btn-primary">Zum Dashboard</a>
+        {% else %}
+            <a href="/register" class="btn btn-primary">Jetzt registrieren</a>
+            <a href="/login" class="btn btn-secondary">Einloggen</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <h3>🔔 Live-Benachrichtigungen</h3>
+        <p>Erhalte Embedded-Nachrichten in deinem Discord, sobald ein Streamer live geht.</p>
+    </div>
+    <div class="feature-card">
+        <h3>🌐 Web-Dashboard</h3>
+        <p>Konfiguriere alles bequem über die Website – kein Discord-Command nötig.</p>
+    </div>
+    <div class="feature-card">
+        <h3>📊 Mehrere Streamer</h3>
+        <p>Tracke beliebig viele Twitch-Streamer pro Server.</p>
+    </div>
+    <div class="feature-card">
+        <h3>🔒 Auth-System</h3>
+        <p>Sicheres Login-System – bereit für zukünftige Premium-Features.</p>
+    </div>
+</div>
+{% endblock %}

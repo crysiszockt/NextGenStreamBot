@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamer Bot – {% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css?v=3">
+    <script>
+    (function() {
+        var theme = localStorage.getItem('theme') || 'ocean';
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+</head>
+<body class="{% if user %}logged-in{% endif %}">
+    {% if user %}
+    <nav class="navbar">
+        <div class="container">
+            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Sidebar umschalten">
+                <span class="sidebar-toggle-icon">☰</span>
+            </button>
+            <a href="/" class="nav-brand">📺 Streamer Bot</a>
+            <div class="nav-links">
+                <div class="theme-dropdown">
+                    <button type="button" class="theme-toggle" onclick="toggleThemeDropdown()" title="Theme wechseln">
+                        <span class="theme-icon">🎨</span>
+                        <span class="dropdown-arrow">▾</span>
+                    </button>
+                    <div class="theme-dropdown-menu" id="themeDropdown">
+                        <button type="button" class="theme-option" data-theme="ocean" onclick="setTheme('ocean')">🌊 Ocean</button>
+                        <button type="button" class="theme-option" data-theme="coral" onclick="setTheme('coral')">🪸 Coral</button>
+                        <button type="button" class="theme-option" data-theme="gold" onclick="setTheme('gold')">✨ Gold</button>
+                    </div>
+                </div>
+                <div class="user-dropdown">
+                    <button type="button" class="user-dropdown-btn" onclick="toggleUserDropdown()">
+                        <span class="nav-user">{{ user.username }}</span>
+                        <span class="dropdown-arrow">▾</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdown">
+                        <a href="/premium" class="dropdown-item">⭐ Premium</a>
+                        <a href="/logout" class="dropdown-item">🚪 Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-inner">
+                <div class="sidebar-section">
+                    <div class="sidebar-label">Allgemein</div>
+                    <div class="sidebar-accordion">
+                        <button type="button" class="sidebar-accordion-btn {% if request.url.path == '/dashboard' %}open{% endif %}" onclick="toggleAccordion(this)">
+                            <span class="sidebar-link-icon">📊</span>
+                            <span class="sidebar-accordion-label">Übersicht</span>
+                            <span class="sidebar-accordion-arrow">▾</span>
+                        </button>
+                        <div class="sidebar-accordion-content {% if request.url.path == '/dashboard' %}open{% endif %}">
+                            <button type="button" class="sidebar-sub-link {% if request.url.path == '/dashboard' %}active{% endif %}" onclick="location.href='/dashboard'">
+                                <span class="sidebar-link-icon">📈</span> Dashboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {% set sidebar_guilds = sidebar_guilds or [] %}
+                {% if sidebar_guilds %}
+                <div class="sidebar-section">
+                    <div class="sidebar-label">Server</div>
+                    {% for g in sidebar_guilds %}
+                    {% set guild_is_active = request.url.path.startswith('/guild/' ~ g.guild_id) %}
+                    <div class="sidebar-accordion">
+                        <button type="button" class="sidebar-accordion-btn {% if guild_is_active %}open{% endif %}" onclick="toggleAccordion(this)">
+                            <span class="sidebar-link-icon">🖥️</span>
+                            <span class="sidebar-accordion-label">{{ g.guild_name }}</span>
+                            <span class="sidebar-accordion-arrow">▾</span>
+                        </button>
+                        <div class="sidebar-accordion-content {% if guild_is_active %}open{% endif %}">
+                            <button type="button" class="sidebar-sub-link {% if request.url.path == '/guild/' ~ g.guild_id %}active{% endif %}" onclick="location.href='/guild/{{ g.guild_id }}'">
+                                <span class="sidebar-link-icon">⚙️</span> Einstellungen
+                            </button>
+                            <button type="button" class="sidebar-sub-link {% if request.url.path == '/guild/' ~ g.guild_id ~ '/audit' %}active{% endif %}" onclick="location.href='/guild/{{ g.guild_id }}/audit'">
+                                <span class="sidebar-link-icon">📋</span> Audit Log
+                            </button>
+                            <button type="button" class="sidebar-sub-link {% if request.url.path == '/guild/' ~ g.guild_id ~ '/youtube' %}active{% endif %}" onclick="location.href='/guild/{{ g.guild_id }}/youtube'">
+                                <span class="sidebar-link-icon">▶️</span> YouTube
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+        <main class="main-content" id="mainContent">
+    {% else %}
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="nav-brand">📺 Streamer Bot</a>
+            <div class="nav-links">
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/register" class="nav-link">Registrieren</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+    {% endif %}
+        <div class="container">
+            {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% if user %}
+    </div>
+    {% endif %}
+
+    <footer class="footer">
+        <div class="container">
+            <p>Streamer Bot – Made with ❤️</p>
+        </div>
+    </footer>
+
+    <script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function toggleAccordion(btn) {
+        btn.classList.toggle('open');
+        var content = btn.nextElementSibling;
+        if (content) {
+            content.classList.toggle('open');
+        }
+    }
+
+    function toggleThemeDropdown() {
+        document.getElementById('themeDropdown').classList.toggle('open');
+        document.querySelector('.theme-toggle').classList.toggle('open');
+    }
+
+    function setTheme(name) {
+        document.documentElement.setAttribute('data-theme', name);
+        localStorage.setItem('theme', name);
+        document.getElementById('themeDropdown').classList.remove('open');
+        document.querySelector('.theme-toggle').classList.remove('open');
+    }
+
+    function toggleUserDropdown() {
+        document.getElementById('userDropdown').classList.toggle('open');
+        document.querySelector('.user-dropdown-btn').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        var udd = document.getElementById('userDropdown');
+        if (udd && udd.classList.contains('open')) {
+            if (!e.target.closest('.user-dropdown')) {
+                udd.classList.remove('open');
+                var btn = document.querySelector('.user-dropdown-btn');
+                if (btn) btn.classList.remove('open');
+            }
+        }
+        var tdd = document.getElementById('themeDropdown');
+        if (tdd && tdd.classList.contains('open')) {
+            if (!e.target.closest('.theme-dropdown')) {
+                tdd.classList.remove('open');
+                var btn = document.querySelector('.theme-toggle');
+                if (btn) btn.classList.remove('open');
+            }
+        }
+    });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
