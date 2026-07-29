@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}YouTube – {{ guild.guild_name }}{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="media-placeholder">
+        <div class="media-placeholder-icon">▶️</div>
+        <h4>YouTube Benachrichtigungen</h4>
+        <p style="color:var(--text-muted)">Hier kannst du zukünftig YouTube-Upload-Benachrichtigungen für deinen Discord-Server konfigurieren.</p>
+        <div class="media-feature-list">
+            <div class="media-feature">
+                <span class="media-feature-icon">🔔</span>
+                <span>Benachrichtigungen bei neuen YouTube-Uploads</span>
+            </div>
+            <div class="media-feature">
+                <span class="media-feature-icon">🔗</span>
+                <span>Automatische Links zu neuen Videos</span>
+            </div>
+            <div class="media-feature">
+                <span class="media-feature-icon">⏰</span>
+                <span>Geplante Checks in regelmäßigen Abständen</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <h2>Dashboard</h2>
+    <p>Willkommen, <strong>{{ user.username }}</strong>!
+        {% if user.is_premium %}
+            <span class="badge badge-premium">⭐ Premium</span>
+        {% else %}
+            <span class="badge badge-free">🔓 Free</span>
+        {% endif %}
+    </p>
+    <form method="POST" action="/dev/toggle-premium" class="dev-toggle-form">
+        <button type="submit" class="btn btn-dev">🛠️ Dev-Toggle: Premium {{ '➡️ Free' if user.is_premium else '➡️ Premium' }}</button>
+    </form>
+</div>
+
+<div class="plan-info">
+    <div class="plan-card {% if user.is_premium %}plan-premium{% else %}plan-free{% endif %}">
+        <h4>{{ '⭐ Premium' if user.is_premium else '🔓 Free' }} Plan</h4>
+        <div class="plan-stats">
+            <span>Server: {{ guilds|length }} / {{ '∞' if user.is_premium else max_guilds }}</span>
+            <span>Streamer pro Server: {{ '1' if not user.is_premium else '5' }} / {{ '5' if user.is_premium else '1' }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="guild-list">
+    <h3>Deine verbundenen Discord-Server</h3>
+    {% if guilds %}
+        {% for guild in guilds %}
+            <div class="guild-card">
+                <div class="guild-info">
+                    <h4>{{ guild.guild_name }}</h4>
+                    <span class="guild-id">ID: {{ guild.guild_id }}</span>
+                    <span class="badge {% if guild.is_premium %}badge-premium{% else %}badge-free{% endif %}">
+                        {% if guild.is_premium %}⭐ Premium{% else %}🔓 Free{% endif %}
+                    </span>
+                </div>
+                <div class="guild-actions">
+                    <a href="/guild/{{ guild.guild_id }}" class="btn btn-primary">Einstellungen</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if can_add_more %}
+        <div class="add-server-container">
+            <p class="add-server-hint">Bot in einen weiteren Server einladen, dann mit <code>/setup {{ user.username }}</code> verbinden.</p>
+            <a href="https://discord.com/oauth2/authorize?client_id=1495165877421609041&permissions=2147502080&scope=bot%20applications.commands" target="_blank" class="btn btn-primary">➕ Server hinzufügen</a>
+        </div>
+    {% else %}
+        <div class="add-server-container add-server-locked">
+            <span class="lock-icon">😢</span>
+            <p class="add-server-hint">Server-Limit erreicht ({{ guilds|length }}/{{ max_guilds }}).</p>
+            {% if user.is_premium %}
+                <p class="add-server-hint">Du hast bereits alle möglichen Server verbunden.</p>
+            {% else %}
+                <p class="add-server-hint">Upgrade auf Premium für unbegrenzte Server!</p>
+                <button class="btn btn-disabled" disabled>🔒 Premium erforderlich</button>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+{% if not guilds %}
+    <div class="empty-state">
+        <h3>Keine verbundenen Server</h3>
+        <p>So verbindest du einen Server:</p>
+        <ol>
+            <li>Lade den Bot auf deinen Discord-Server ein</li>
+            <li>Führe den Befehl <code>/setup {{ user.username }}</code> auf dem Server aus</li>
+            <li>Der Server erscheint hier und du kannst ihn konfigurieren</li>
+        </ol>
+        <a href="https://discord.com/oauth2/authorize?client_id=1495165877421609041&permissions=2147502080&scope=bot%20applications.commands" target="_blank" class="btn btn-primary">🤖 Bot einladen</a>
+    </div>
+{% endif %}
+{% endblock %}

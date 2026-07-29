@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Premium{% endblock %}
+{% block content %}
+<div class="section">
+    <h2>⭐ Premium</h2>
+    <div class="plan-comparison">
+        <div class="plan-col">
+            <div class="plan-col-header">
+                <h4>🔓 Free</h4>
+                <div class="plan-price">€0</div>
+            </div>
+            <ul class="plan-features">
+                <li class="plan-feat plan-feat-active"><span class="plan-feat-icon">✅</span> 1 Streamer</li>
+                <li class="plan-feat plan-feat-active"><span class="plan-feat-icon">✅</span> 1 Plattform pro Streamer</li>
+                <li class="plan-feat plan-feat-active"><span class="plan-feat-icon">✅</span> 1 Server</li>
+            </ul>
+            <span class="plan-badge plan-badge-current">Aktuell</span>
+        </div>
+        <div class="plan-col plan-col-highlight">
+            <div class="plan-col-header plan-col-header-premium">
+                <h4>⭐ Premium</h4>
+                <div class="plan-price plan-price-premium">€4.99 / Monat</div>
+            </div>
+            <ul class="plan-features">
+                <li class="plan-feat plan-feat-active"><span class="plan-feat-icon">✅</span> Bis zu 5 Streamer</li>
+                <li class="plan-feat plan-feat-active"><span class="plan-feat-icon">✅</span> Bis zu 10 Plattformen pro Streamer</li>
+                <li class="plan-feat plan-feat-active"><span class="plan-feat-icon">✅</span> Unbegrenzte Server</li>
+            </ul>
+            {% if user and user.is_premium %}
+                <span class="plan-badge plan-badge-premium">Aktiv</span>
+            {% else %}
+                <span class="plan-badge plan-badge-premium">Premium werden</span>
+            {% endif %}
+        </div>
+    </div>
+    <form method="POST" action="/dev/toggle-premium" class="dev-toggle-form">
+        <button type="submit" class="btn btn-dev">🛠️ Dev-Toggle</button>
+    </form>
+</div>
+{% endblock %}
